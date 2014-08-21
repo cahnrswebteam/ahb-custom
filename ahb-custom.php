@@ -210,6 +210,14 @@ define( __NAMESPACE__ . '\DIR' , plugin_dir_path( __FILE__ ) );
 			'normal',
 			'high'
 		);
+		add_meta_box(
+			'collaborator_meta',
+			__( 'Collaborator Info' ),
+			array( $this , 'render_col_metabox' ),
+			'collaborators',
+			'normal',
+			'high'
+		);
 		$redirect_types = array( 'page','post');
 		if( in_array( $post_type , $redirect_types ) ){
 			add_meta_box(
@@ -263,6 +271,15 @@ define( __NAMESPACE__ . '\DIR' , plugin_dir_path( __FILE__ ) );
 				 \wp_redirect( $meta , 302 );
 			 }
 		 }
+	 }
+	 
+	 public function render_col_metabox( $post ){
+		 $phone = \get_post_meta( $post->ID ,'Collaborator phone' , true );
+		 $email = \get_post_meta( $post->ID , 'Collaborator email' , true );
+		 echo '<label>Phone</label><br />';
+         echo '<input type="text" name="Collaborator phone" value="'.$phone.'"/><br />';
+		 echo '<label>Phone</label><br />';
+         echo '<input type="text" name="Collaborator email" value="'.$email.'"/>';
 	 }
 	 
 	 public function add_metabox(){
