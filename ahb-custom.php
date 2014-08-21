@@ -247,6 +247,8 @@ define( __NAMESPACE__ . '\DIR' , plugin_dir_path( __FILE__ ) );
 		$fields = array(
 			'_redirect_to',
 			'video_id',
+			'Collaborator phone',
+			'Collaborator email'
 		);
 		
 		foreach( $fields as $field ){
@@ -278,7 +280,7 @@ define( __NAMESPACE__ . '\DIR' , plugin_dir_path( __FILE__ ) );
 		 $email = \get_post_meta( $post->ID , 'Collaborator email' , true );
 		 echo '<label>Phone</label><br />';
          echo '<input type="text" name="Collaborator phone" value="'.$phone.'"/><br />';
-		 echo '<label>Phone</label><br />';
+		 echo '<label>Email</label><br />';
          echo '<input type="text" name="Collaborator email" value="'.$email.'"/>';
 	 }
 	 
