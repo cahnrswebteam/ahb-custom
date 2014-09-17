@@ -26,6 +26,10 @@ define( __NAMESPACE__ . '\DIR' , plugin_dir_path( __FILE__ ) );
 	  );
 	 
 	 public function __construct(){
+		
+		\add_action( 'init', array( $this , 'create_post_types') );
+		//add_action( 'add_meta_boxes', array( $this , 'add_ahb_metabox' ) );
+		//add_action( 'save_post', array( $this, 'save_metaboxs' ) );
 		 //\add_filter( 'the_content', array( $this, 'filter_ahb_content' ) );
 		 if ( is_admin() ) {
     		\add_action( 'load-post.php', array( $this , 'add_metabox' ) );
@@ -34,10 +38,6 @@ define( __NAMESPACE__ . '\DIR' , plugin_dir_path( __FILE__ ) );
 		if ( !is_admin() ){
 			\add_action( 'template_redirect', array( $this , 'ahb_redirect' ) );
 		}
-		\add_action( 'init', array( $this , 'create_post_types') );
-		//add_action( 'add_meta_boxes', array( $this , 'add_ahb_metabox' ) );
-		//add_action( 'save_post', array( $this, 'save_metaboxs' ) );
-		
 		\add_action( 'init' , array( $this , 'add_menus' ) );
 		\add_filter( 'wp_nav_menu_items', array( $this , 'custom_menu_items' ), 10, 2 );
 		if( is_admin() ){
@@ -201,7 +201,7 @@ define( __NAMESPACE__ . '\DIR' , plugin_dir_path( __FILE__ ) );
 		}
 	}
 	 
-	 public function add_ahb_metabox( $post_type ){
+	 public function add_ahb_metabox( $post ){
 		 add_meta_box(
 			'video_meta',
 			__( 'Video Settings' ),
@@ -218,13 +218,14 @@ define( __NAMESPACE__ . '\DIR' , plugin_dir_path( __FILE__ ) );
 			'normal',
 			'high'
 		);
-		$redirect_types = array( 'page','post');
-		if( in_array( $post_type , $redirect_types ) ){
+		$redirect_types = array( 'page', 'post' , 'feature_slides' );
+		if( in_array( $post->post_type , $redirect_types ) ){
+			//var_dump( $post->post_type );
 			add_meta_box(
 				'ahb_redirect'
 				,'Redirect To:'
 				,array( $this, 'render_redirect_meta_box_content' )
-				,$post_type
+				,'feature_slides'
 				,'advanced'
 				,'high'
 			);
@@ -266,8 +267,8 @@ define( __NAMESPACE__ . '\DIR' , plugin_dir_path( __FILE__ ) );
 	 
 	 public function ahb_redirect(){
 		 global $post;
-		 $redirect_types = array( 'page','post');
-		 if( in_array( $post_type , $redirect_types ) && ( is_singular('post') || is_singular( 'page') ) && is_main_query() ){
+		 $redirect_types = array( 'page','post','feature_slides');
+		 if( in_array( $post->post_type , $redirect_types ) && is_singular() && is_main_query() ){
 			 $meta = \get_post_meta( $post->ID , '_redirect_to' , true );
 			 if( $meta ){
 				 \wp_redirect( $meta , 302 );
@@ -411,7 +412,7 @@ public function ahb_feature_slides() {
 		'public'        	=> true,
 		'show_in_nav_menus' => false,
 		'menu_position'		=> 20,
-		'supports'      	=> array( 'title', 'editor', 'thumbnail', 'custom-fields' ),
+		'supports'      	=> array( 'title', 'editor','excerpt', 'thumbnail', 'custom-fields' ),
 		'has_archive'   	=> true,
 		'taxonomies'		=> array('category'),
 		);
